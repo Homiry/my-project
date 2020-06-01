@@ -28,5 +28,6 @@ import { Swiper, SwiperItem } from "components/common/swiper";
     };
 </script>
 
-<style>
+<style scoped>
+
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div class="recommend">
-    <div class="recommend-item" v-for="item in recommends" >
+    <div class="recommend-item" v-for="(item,index) in recommends" :key="index">
       <a :href="item.link">
         <img :src="item.image" alt="">
         <div>{{item.title}}</div>
@@ -26,19 +26,15 @@
 <style scoped>
   .recommend {
     display: flex;
-    width: 100%;
-    text-align: center;
-    justify-content: center;
-    /* margin-top: 10px; */
-    font-size: 12px;
-    /* padding-bottom: 30px; */
-    padding: 10px 0 20px;
+    margin-top: 10px;
+    font-size: 14px;
+    padding-bottom: 30px;
     border-bottom: 10px solid #eee;
   }
 
   .recommend-item {
     flex: 1;
-    /* text-align: center; */
+    text-align: center;
   }
 
   .recommend img {
