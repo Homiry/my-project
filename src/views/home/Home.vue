@@ -1,12 +1,17 @@
 <template>
   <div id="home">
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
-    <home-swiper :banners="banners"></home-swiper>
-    <recommend-view :recommends="recommends"></recommend-view>
-    <feature-view />
-    <tab-control class="tab-control" :titles="['流行','新款','精选']" />
-    <goods-list :goods="goods['pop'].list" />
     
+    <scroll class="content" >
+      <home-swiper :banners="banners"></home-swiper>
+      <recommend-view :recommends="recommends"></recommend-view>
+      <feature-view />
+      <tab-control class="tab-control" 
+                  :titles="['流行','新款','精选']"  
+                  @tabClick="tabClick" />
+      <goods-list :goods="showGoods" />
+    </scroll>
+  
   </div>
 </template>
 
@@ -17,7 +22,8 @@
 
   import NavBar from 'components/common/navbar/NavBar';
   import TabControl from 'components/content/tabControl/TabControl';
-  import GoodsList from 'components/content/goods/GoodsList'
+  import GoodsList from 'components/content/goods/GoodsList';
+  import Scroll from 'components/common/scroll/Scroll';
 
   import { getHomeMultidata, getHomeGoods } from "network/home";
   
@@ -30,7 +36,8 @@
       RecommendView,
       FeatureView,
       TabControl,
-      GoodsList
+      GoodsList,
+      Scroll
     },
      data() {
       return {
@@ -40,7 +47,8 @@
           'pop': {page: 0, list: []},
           'new': {page: 0, list: []},
           'sell': {page: 0, list: []},
-        }
+        },
+        currentType: 'pop'
       }
     },
     created() {
@@ -52,7 +60,36 @@
       this.getHomeGoods('new')
       this.getHomeGoods('sell')
     },
+    mounted() {
+      
+    },
+    computed: {
+      showGoods() {
+        return this.goods[this.currentType].list
+      }
+    },
     methods: {
+      /*
+       *事件监听方法
+      */
+      tabClick(index) {
+        // console.log(index);
+        switch(index) {
+          case 0:
+            this.currentType = 'pop'
+            break
+          case 1:
+            this.currentType = 'new'
+            break
+          case 2:
+            this.currentType = 'sell'
+            break
+        }
+          
+      },
+      /*
+       * 网络请求方法
+       */
       getHomeMultidata() {
         getHomeMultidata().then(res => {
         this.banners = res.data.banner.list;
@@ -63,8 +100,8 @@
       getHomeGoods(type) {
         const page = this.goods[type].page + 1 
         getHomeGoods(type, page).then(res => {
-          this.goods[type].list.push(...res.data.list)
-          this.goods[type].page += 1
+          this.goods[type].list.push(...res.data.list);
+          this.goods[type].page += 1;
         // console.log(res);
       })
       }
@@ -74,7 +111,9 @@
 
 <style scoped>
   #home {
+    position: relative;
     padding-top: 44px;
+    height: 100vh;
   }
 
   .home-nav {
@@ -90,5 +129,25 @@
   .tab-control {
     position: sticky;
     top: 44px;
+    z-index: 9;
   }
+
+  .content {
+    position: absolute;
+
+    top: 44px;
+    bottom: 49px;
+    left: 0;
+    right: 0;
+    
+    overflow: hidden;
+    
+  }
+
+  /* .content {
+    height: calc(100% - 93px);
+    overflow: hidden;
+    margin-top: 44px;
+  } */
+
 </style>
