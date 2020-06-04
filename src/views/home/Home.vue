@@ -2,7 +2,12 @@
   <div id="home">
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
     
-    <scroll class="content" >
+    <scroll class="content" 
+            ref="scroll" 
+            :probe-type="3"
+            @scroll="contentScroll"
+            :pull-up-load="true"
+            @pullingUp="loadMore">
       <home-swiper :banners="banners"></home-swiper>
       <recommend-view :recommends="recommends"></recommend-view>
       <feature-view />
@@ -11,7 +16,8 @@
                   @tabClick="tabClick" />
       <goods-list :goods="showGoods" />
     </scroll>
-  
+
+    <back-top @click.native="backClick" v-show="isShowBackTop"></back-top>
   </div>
 </template>
 
@@ -24,6 +30,7 @@
   import TabControl from 'components/content/tabControl/TabControl';
   import GoodsList from 'components/content/goods/GoodsList';
   import Scroll from 'components/common/scroll/Scroll';
+  import BackTop from 'components/content/backTop/BackTop';
 
   import { getHomeMultidata, getHomeGoods } from "network/home";
   
@@ -37,7 +44,8 @@
       FeatureView,
       TabControl,
       GoodsList,
-      Scroll
+      Scroll,
+      BackTop
     },
      data() {
       return {
@@ -48,7 +56,8 @@
           'new': {page: 0, list: []},
           'sell': {page: 0, list: []},
         },
-        currentType: 'pop'
+        currentType: 'pop',
+        isShowBackTop: false
       }
     },
     created() {
@@ -85,7 +94,18 @@
             this.currentType = 'sell'
             break
         }
-          
+      },
+      backClick() {
+        // 通过ref到Scroll组件中拿到对象的方法实现点击跳回顶部，奈斯
+        this.$refs.scroll.scrollTo(0, 0, 500)
+      },
+      contentScroll(position) {
+        // console.log(position)
+        this.isShowBackTop = (-position.y) > 1000
+      },
+      loadMore() {
+        // console.log('上拉加载')
+        this.getHomeGoods(this.currentType)
       },
       /*
        * 网络请求方法
@@ -103,6 +123,7 @@
           this.goods[type].list.push(...res.data.list);
           this.goods[type].page += 1;
         // console.log(res);
+          this.$refs.scroll.finishPullUp()
       })
       }
     }
@@ -127,7 +148,7 @@
   }
 
   .tab-control {
-    position: sticky;
+    position: sticky; /*用scroll后已经不起作用 */
     top: 44px;
     z-index: 9;
   }
