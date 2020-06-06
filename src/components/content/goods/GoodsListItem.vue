@@ -1,6 +1,6 @@
 <template>
   <div class="goods-item">
-    <img :src="goodsItem.show.img" alt="">
+    <img :src="goodsItem.show.img" alt="" @load="imageLoad">
     <div class="goods-info">
       <p>{{goodsItem.title}}</p>
       <span class="price">¥{{goodsItem.price}}</span>
@@ -17,9 +17,14 @@
         type: Object,
         default() {
           return {}
+        }
       }
+    },
+    methods: {
+      imageLoad() {
+        //通过事件总线发射事件让home监听对图片加载完后刷新滚动区域高度
+        this.$bus.$emit('itemImageLoad')
       }
-      
     }
   }
 </script>

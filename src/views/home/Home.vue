@@ -7,7 +7,8 @@
             :probe-type="3"
             @scroll="contentScroll"
             :pull-up-load="true"
-            @pullingUp="loadMore">
+            >
+            <!-- @pullingUp="loadMore" -->
       <home-swiper :banners="banners"></home-swiper>
       <recommend-view :recommends="recommends"></recommend-view>
       <feature-view />
@@ -70,7 +71,11 @@
       this.getHomeGoods('sell')
     },
     mounted() {
-      
+       //监听item中的图片加载完成
+      this.$bus.$on('itemImageLoad', () =>{
+          // console.log('--------')
+          this.$refs.scroll.refresh()
+        })
     },
     computed: {
       showGoods() {
@@ -101,12 +106,13 @@
       },
       contentScroll(position) {
         // console.log(position)
+        //显示回到顶部箭头
         this.isShowBackTop = (-position.y) > 1000
       },
-      loadMore() {
-        // console.log('上拉加载')
-        this.getHomeGoods(this.currentType)
-      },
+      // loadMore() {
+      //   // console.log('上拉加载')
+      //   this.getHomeGoods(this.currentType)
+      // },
       /*
        * 网络请求方法
        */
@@ -123,7 +129,8 @@
           this.goods[type].list.push(...res.data.list);
           this.goods[type].page += 1;
         // console.log(res);
-          this.$refs.scroll.finishPullUp()
+        //解决第二次上拉加载上不生效
+          // this.$refs.scroll.finishPullUp()
       })
       }
     }

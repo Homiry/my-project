@@ -15,10 +15,10 @@
         type: Number,
         default: 0
       } ,
-      pullUpLoad: {
-        type: Boolean,
-        default: false
-      } 
+      // pullUpLoad: {
+      //   type: Boolean,
+      //   default: false
+      // } 
     },
     data() {
       return {  
@@ -38,18 +38,23 @@
         // console.log(position);
         this.$emit('scroll', position)
       })
+      // console.log(this.scroll)
+
       //监听上拉事件
-      this.scroll.on('pullingUp', () => {
-        // console.log('上拉加载')
-        this.$emit('pullingUp')
-      })
+      // this.scroll.on('pullingUp', () => {
+      //   // console.log('上拉加载')
+      //   this.$emit('pullingUp')
+      // })
     },
     methods: {
       scrollTo(x, y, delay = 300) {
-        this.scroll.scrollTo(x, y, delay)
+        this.scroll && this.scroll.scrollTo(x, y, delay)
       },
       finishPullUp() {
-        this.scroll.finishPullUp()
+        this.scroll && this.scroll.finishPullUp()
+      },
+      refresh() {
+        this.scroll && this.scroll.refresh()
       }
     }
   }
