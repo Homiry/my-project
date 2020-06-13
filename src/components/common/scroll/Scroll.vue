@@ -15,10 +15,10 @@
         type: Number,
         default: 0
       } ,
-      // pullUpLoad: {
-      //   type: Boolean,
-      //   default: false
-      // } 
+      pullUpLoad: {
+        type: Boolean,
+        default: false
+      } 
     },
     data() {
       return {  
@@ -34,17 +34,21 @@
       })
 
       //监听滚动位置
+      if(this.probeType === 2 || this.probeType === 3) {
       this.scroll.on('scroll', (position) => {
         // console.log(position);
         this.$emit('scroll', position)
       })
+    }
       // console.log(this.scroll)
 
       //监听上拉事件
-      // this.scroll.on('pullingUp', () => {
-      //   // console.log('上拉加载')
-      //   this.$emit('pullingUp')
-      // })
+      if(this.pullUpLoad) {
+        this.scroll.on('pullingUp', () => {
+          console.log('上拉加载')
+          this.$emit('pullingUp')
+        })
+      }
     },
     methods: {
       scrollTo(x, y, delay = 300) {
@@ -54,7 +58,11 @@
         this.scroll && this.scroll.finishPullUp()
       },
       refresh() {
+        // console.log('测试防抖函数是否实现')
         this.scroll && this.scroll.refresh()
+      },
+      getScrollY() {
+        return this.scroll ? this.scroll.y : 0
       }
     }
   }

@@ -1,5 +1,5 @@
 <template>
-  <div class="goods-item">
+  <div class="goods-item" @click="itemclick">
     <img :src="goodsItem.show.img" alt="" @load="imageLoad">
     <div class="goods-info">
       <p>{{goodsItem.title}}</p>
@@ -24,6 +24,10 @@
       imageLoad() {
         //通过事件总线发射事件让home监听对图片加载完后刷新滚动区域高度
         this.$bus.$emit('itemImageLoad')
+      },
+        //动态路由，点击跳转到详情页事件
+      itemclick() {
+        this.$router.push('/detail/' + this.goodsItem.iid)
       }
     }
   }

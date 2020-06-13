@@ -28,7 +28,7 @@
     display: flex;
     margin-top: 10px;
     font-size: 14px;
-    padding-bottom: 30px;
+    padding-bottom: 15px;
     border-bottom: 10px solid #eee;
   }
 
